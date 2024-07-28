@@ -1,14 +1,18 @@
 import time
 import serial
 import traceback
+import threading
 
 from config.main import settings
 from utils.printer import Printer
 from utils.audio import Audio
-from utils.socket import Socket
+from utils.zocket import Socket
 from utils.decider import decide
+from utils.gmail import poll_for_emails
 
 play_button_activated = False
+venmo_thread = threading.Thread(target=poll_for_emails)
+venmo_thread.start()
 
 def main():
     global play_button_activated
