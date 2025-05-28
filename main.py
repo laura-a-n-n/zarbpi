@@ -6,7 +6,7 @@ from config.main import settings
 from utils.printer import Printer
 from utils.audio import Audio
 from utils.zocket import Zocket
-from utils.decider import decide
+from utils.decider import decide, random_sfx
 
 play_button_activated = False
 
@@ -46,6 +46,7 @@ def main():
             print("Was not able to play that file!")
             pass
     elif split[0][0] == settings["begin_keyword"]:
+        audio.play(random_sfx(), with_music=False)
         decision = decide("intro")
         arduino.write(str(decision).encode())
     elif split[0][0] == settings["play_keyword"]:
