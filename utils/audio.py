@@ -17,7 +17,8 @@ class Audio:
         self.sounds[sound] = mixer.Sound(soundfile)
 
     def play(self, sound, with_music=True):
-        self.music(with_music)
+        if with_music:
+            self.music(True)
         if sound not in self.sounds:
             self.create(sound)
         print("Sound playing...")

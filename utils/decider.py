@@ -47,3 +47,19 @@ def decide(mode):
 
     return id
     
+def make_counter(i = -1):
+    k = i
+    def f():
+        nonlocal k
+        k += 1
+        return k
+    return f
+
+sfx_counter = make_counter()
+
+def random_sfx():
+    i = sfx_counter()
+    i %= 4
+    i += 1
+    return f"SFX {i}_2"
+    
