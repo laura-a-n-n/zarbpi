@@ -46,6 +46,7 @@ def main():
             print("Was not able to play that file!")
             pass
     elif split[0][0] == settings["begin_keyword"]:
+        audio.play(random_sfx(), with_music=False)
         decision = decide("intro")
         arduino.write(str(decision).encode())
     elif split[0][0] == settings["coin_keyword"]:
