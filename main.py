@@ -1,18 +1,14 @@
 import time
 import serial
 import traceback
-import threading
 
 from config.main import settings
 from utils.printer import Printer
 from utils.audio import Audio
-from utils.zocket import Socket
+from utils.zocket import Zocket
 from utils.decider import decide
-from utils.gmail import poll_for_emails
 
 play_button_activated = False
-venmo_thread = threading.Thread(target=poll_for_emails)
-venmo_thread.start()
 
 def main():
     global play_button_activated
@@ -90,7 +86,7 @@ if __name__ == "__main__":
 
     printer = Printer()
     audio = Audio()
-    socket = Socket()
+    socket = Zocket()
     
     with serial.Serial(settings["arduino_port"], settings["arduino_baudrate"], timeout=1.0) as arduino:
         time.sleep(0.1) # wait for serial to open

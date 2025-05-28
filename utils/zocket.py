@@ -3,7 +3,7 @@ import traceback
 
 from config.main import settings
 
-class Socket:
+class Zocket:
     def __init__(self, port=settings["socket_port"]):
         super()
         self.socket = socket.socket()

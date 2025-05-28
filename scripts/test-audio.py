@@ -12,7 +12,7 @@ class Audio:
         self.ext = ext
     
     def create(self, sound):
-        soundfile = f"./sounds/{sound}.{self.ext}"
+        soundfile = f"../sounds/{sound}.{self.ext}"
         print(f"Creating sound {soundfile}")
         self.sounds[sound] = mixer.Sound(soundfile)
 
