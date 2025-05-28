@@ -11,16 +11,19 @@ class Audio:
         self.current_song = 0
         self.music_playing = False
 
-    def create(self, sound):
+    def create(self, sound, volume=None):
         soundfile = f"{settings['sounds_path']}/{sound}.{self.ext}"
         print(f"Creating sound {soundfile}")
-        self.sounds[sound] = mixer.Sound(soundfile)
+        sound_object = mixer.Sound(soundfile)
+        self.sounds[sound] = sound_object
+        if volume is not None:
+            sound_object.set_volume(volume)
 
-    def play(self, sound, with_music=True):
+    def play(self, sound, with_music=True, volume=None):
         if with_music:
             self.music(True)
         if sound not in self.sounds:
-            self.create(sound)
+            self.create(sound, volume)
         print("Sound playing...")
         return self.sounds[sound].play()
     
