@@ -1,9 +1,6 @@
 import time
 import pygame.mixer as mixer
 
-import pygame.mixer as mixer
-from config.main import settings
-
 class Audio:
     def __init__(self, ext = "wav"):
         super()
@@ -12,7 +9,7 @@ class Audio:
         self.ext = ext
     
     def create(self, sound):
-        soundfile = f"../sounds/{sound}.{self.ext}"
+        soundfile = f"./sounds/{sound}.{self.ext}"
         print(f"Creating sound {soundfile}")
         self.sounds[sound] = mixer.Sound(soundfile)
 
