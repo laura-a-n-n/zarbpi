@@ -23,7 +23,7 @@ class Audio:
             self.music(True)
         sound_object = None
         if sound not in self.sounds:
-            sound_object = self.create(sound, volume)
+            sound_object = self.create(sound)
         else:
             sound_object = self.sounds[sound]
         if volume is not None:
