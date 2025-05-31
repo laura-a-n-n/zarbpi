@@ -19,7 +19,6 @@ settings = dict(
     play_keyword = "P",
     idle_keyword = "I",
     begin_keyword = "B",
-    coin_keyword = "C",
     stop_keyword = "S",
     print_keyword = "X",
     decodings = dict(
@@ -46,7 +45,6 @@ settings = dict(
     num_bg_music = 3,
     fade_time = 1000,
     num_fortunes = 30,
-    required_coins = 4,
 
     # socket settings
     socket_port = 7777,
