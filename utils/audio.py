@@ -21,11 +21,9 @@ class Audio:
     def play(self, sound, with_music=True, volume=None):
         if with_music:
             self.music(True)
-        sound_object = None
+        sound_object = self.sounds[sound]
         if sound not in self.sounds:
             sound_object = self.create(sound, volume)
-        else:
-            sound_object = self.sounds[sound]
         if volume is not None:
             sound_object.set_volume(volume)
         else:
