@@ -16,20 +16,16 @@ class Audio:
         print(f"Creating sound {soundfile}")
         sound_object = mixer.Sound(soundfile)
         self.sounds[sound] = sound_object
-        return sound_object
+        if volume is not None:
+            sound_object.set_volume(volume)
 
     def play(self, sound, with_music=True, volume=None):
         if with_music:
             self.music(True)
-        sound_object = self.sounds[sound]
         if sound not in self.sounds:
-            sound_object = self.create(sound, volume)
-        if volume is not None:
-            sound_object.set_volume(volume)
-        else:
-            sound_object.set_volume(1)
+            self.create(sound, volume)
         print("Sound playing...")
-        return sound_object.play()
+        return self.sounds[sound].play()
     
     def music(self, should_play: bool):
         music = str(settings["bg_music_start"] + self.current_song)
