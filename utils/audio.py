@@ -14,15 +14,24 @@ class Audio:
     def create(self, sound):
         soundfile = f"{settings['sounds_path']}/{sound}.{self.ext}"
         print(f"Creating sound {soundfile}")
-        self.sounds[sound] = mixer.Sound(soundfile)
+        sound_object = mixer.Sound(soundfile)
+        self.sounds[sound] = sound_object
+        return sound_object
 
-    def play(self, sound, with_music=True):
+    def play(self, sound, with_music=True, volume=None):
         if with_music:
             self.music(True)
+        sound_object = None
         if sound not in self.sounds:
-            self.create(sound)
+            sound_object = self.create(sound, volume)
+        else:
+            sound_object = self.sounds[sound]
+        if volume is not None:
+            sound_object.set_volume(volume)
+        else:
+            sound_object.set_volume(1)
         print("Sound playing...")
-        return self.sounds[sound].play()
+        return sound_object.play()
     
     def music(self, should_play: bool):
         music = str(settings["bg_music_start"] + self.current_song)
