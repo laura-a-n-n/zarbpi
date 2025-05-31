@@ -11,7 +11,7 @@ class Audio:
         self.current_song = 0
         self.music_playing = False
 
-    def create(self, sound):
+    def create(self, sound, volume=None):
         soundfile = f"{settings['sounds_path']}/{sound}.{self.ext}"
         print(f"Creating sound {soundfile}")
         sound_object = mixer.Sound(soundfile)
