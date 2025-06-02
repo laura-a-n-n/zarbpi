@@ -1,0 +1,42 @@
+from websocket import WebSocketApp
+import subprocess
+from time import sleep
+
+zocket_queue = []
+
+def on_open(wsapp):
+    print("open")
+    wsapp.send("zocket:zarbalatrax:hello")
+
+def on_close(wsapp, code, reason):
+    wsapp.send("zocket:zarbalatrax:goodbye")
+    print(code, reason)
+    print("close")
+    sleep(10)
+    main()
+
+def on_error(wsapp: WebSocketApp, e):
+    wsapp.send("zocket:zarbalatrax:goodbye")
+    print(e)
+    wsapp.close()
+    sleep(10)
+    main()
+
+def on_message(wsapp, result):
+    print(f"Received {result}")
+    if f"{result}" == "zocket:client:request_presence":
+        wsapp.send("zocket:zarbalatrax:hello")
+    elif f"{result}" == "zocket:client:play":
+        wsapp.send("zocket:zarbalatrax:I SHALL SPEAK")
+        subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", ".G"])
+    elif f"{result}".startswith("zocket:client:play:"):
+        value = int(f"{result}".split("zocket:client:play:").pop())
+        if isinstance(value, int):
+            subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", f".Q,{value}"])
+
+def start_webzocket():
+    wsapp = WebSocketApp("wss://zarbalatrax.com:777/", on_open=on_open, on_close=on_close, on_message=on_message, on_error=on_error)
+    wsapp.run_forever()
+
+if __name__ == "__main__":
+    start_webzocket()

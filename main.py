@@ -52,6 +52,12 @@ def main():
     elif split[0][0] == settings["coin_keyword"]:
         volume = int(split[1]) / settings["required_coins"]
         audio.play(random_sfx(), with_music=False, volume=volume)
+    elif split[0][0] == settings["queue_keyword"]:
+        decision = int(split[1])
+        play_button_activated = True
+        arduino.write(str(decision).encode())
+        if decision <= settings["num_fortunes"]: # if is a fortune
+            audio.play("097")
     elif split[0][0] == settings["play_keyword"]:
         decision = decide("play")
         play_button_activated = True
