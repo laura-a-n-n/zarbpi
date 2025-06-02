@@ -6,6 +6,7 @@ zocket_queue = []
 
 def on_open(wsapp):
     print("open")
+    wsapp.send("c2FyYmVsZXRyYWlzX2xlZ2VuZF9nb2RfNjY2ISEh")
     wsapp.send("zocket:zarbalatrax:hello")
 
 def on_close(wsapp, code, reason):
@@ -13,14 +14,14 @@ def on_close(wsapp, code, reason):
     print(code, reason)
     print("close")
     sleep(10)
-    main()
+    start_webzocket()
 
 def on_error(wsapp: WebSocketApp, e):
     wsapp.send("zocket:zarbalatrax:goodbye")
     print(e)
     wsapp.close()
     sleep(10)
-    main()
+    start_webzocket()
 
 def on_message(wsapp, result):
     print(f"Received {result}")
