@@ -23,6 +23,7 @@ settings = dict(
     stop_keyword = "S",
     print_keyword = "X",
     queue_keyword = "Q",
+    go_keyword = "G",
     decodings = dict(
         CF = ["HEADER", "F_COM", "FOOT_CF"], # common fortune
         CS = ["HEADER", "S_COM", "FOOT_CS"], # common story
