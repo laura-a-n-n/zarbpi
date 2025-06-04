@@ -62,7 +62,7 @@ def main():
         decision = int(split[1])
         print("queuing", decision)
         queued = decision
-        arduino.write(settings["play_keyword"].encode())
+        arduino.write(f".{settings["play_keyword"]}".encode())
     elif split[0][0] == settings["play_keyword"]:
         decision = decide("play")
         play_button_activated = True
