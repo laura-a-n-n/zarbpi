@@ -9,9 +9,11 @@ from utils.zocket import Zocket
 from utils.decider import decide, random_sfx
 
 play_button_activated = False
+queued = None
 
 def main():
     global play_button_activated
+    global queued
     # wait for input buffer to be nonzero
     answer = False
     while not answer and arduino.in_waiting == 0: 
@@ -46,7 +48,12 @@ def main():
             print("Was not able to play that file!")
             pass
     elif split[0][0] == settings["begin_keyword"]:
-        decision = decide("intro")
+        decision = None
+        if queued is not None:
+            decision = queued
+            queued = None
+        else:
+            decision = decide("intro")
         arduino.write(str(decision).encode())
     elif split[0][0] == settings["coin_keyword"]:
         volume = int(split[1]) / settings["required_coins"]
@@ -54,10 +61,8 @@ def main():
     elif split[0][0] == settings["queue_keyword"]:
         decision = int(split[1])
         print("queuing", decision)
-        play_button_activated = True
-        arduino.write(f".P,{decision}".encode())
-        if decision <= settings["num_fortunes"]: # if is a fortune
-            audio.play("097")
+        queued = decision
+        arduino.write(settings["play_command"].encode())
     elif split[0][0] == settings["play_keyword"]:
         decision = decide("play")
         play_button_activated = True
