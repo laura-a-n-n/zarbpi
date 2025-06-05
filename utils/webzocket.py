@@ -33,7 +33,9 @@ def on_message(wsapp, result):
     elif f"{result}".startswith("zocket:client:play:"):
         value = int(f"{result}".split("zocket:client:play:").pop())
         if isinstance(value, int):
-            subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", f".Q,{value}"])
+            subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", f";Q,{value}"])
+            sleep(0.5)
+            subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", ".G"])
 
 def start_webzocket():
     wsapp = WebSocketApp("wss://zarbalatrax.com:777/", on_open=on_open, on_close=on_close, on_message=on_message, on_error=on_error)

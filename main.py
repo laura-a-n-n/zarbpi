@@ -19,14 +19,16 @@ def main():
     while not answer and arduino.in_waiting == 0: 
         socket_response = socket.read()
         if socket_response:
-            arduino.write(socket_response.encode())
+            if not socket_response.startswith(";"):
+                print("sending to arduino")
+                arduino.write(socket_response.encode())
             answer = socket_response
 
     # read answer
     if not answer:
         answer = arduino.readline().decode("utf-8").strip()
     print("Received:", answer)
-    if not (answer and answer.startswith(settings["command_prefix"])):
+    if not (answer and (answer.startswith(settings["command_prefix"]) or answer.startswith(";"))):
         print("(Not a command.)")
         return
         
@@ -48,12 +50,7 @@ def main():
             print("Was not able to play that file!")
             pass
     elif split[0][0] == settings["begin_keyword"]:
-        decision = None
-        if queued is not None:
-            decision = queued
-            queued = None
-        else:
-            decision = decide("intro")
+        decision = decide("intro")
         arduino.write(str(decision).encode())
     elif split[0][0] == settings["coin_keyword"]:
         volume = int(split[1]) / settings["required_coins"]
@@ -62,9 +59,13 @@ def main():
         decision = int(split[1])
         print("queuing", decision)
         queued = decision
-        arduino.write(f".{settings['go_keyword']}".encode())
     elif split[0][0] == settings["play_keyword"]:
-        decision = decide("play")
+        decision = None
+        if queued is not None:
+            decision = queued
+            queued = None
+        else:
+            decision = decide("play")
         play_button_activated = True
         arduino.write(str(decision).encode())
         if decision <= settings["num_fortunes"]: # if is a fortune
