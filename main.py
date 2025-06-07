@@ -19,7 +19,7 @@ def main():
     while not answer and arduino.in_waiting == 0: 
         socket_response = socket.read()
         if socket_response:
-            if not socket_response.startswith(";"):
+            if not socket_response.startswith(settings['internal_command_prefix']):
                 print("sending to arduino")
                 arduino.write(socket_response.encode())
             answer = socket_response
@@ -28,11 +28,12 @@ def main():
     if not answer:
         answer = arduino.readline().decode("utf-8").strip()
     print("Received:", answer)
-    if not (answer and (answer.startswith(settings["command_prefix"]) or answer.startswith(";"))):
+    is_prefixed = answer.startswith(settings["command_prefix"]) or answer.startswith(settings["internal_command_prefix"])
+    if not (answer and is_prefixed):
         print("(Not a command.)")
         return
         
-    answer = answer[1:] # trim .
+    answer = answer[1:] # trim prefix
 
     split = answer.split(",")
 

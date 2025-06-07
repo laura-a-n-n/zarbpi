@@ -1,0 +1,10 @@
+[Unit]
+Description=Zarbalatrax
+
+[Service]
+Type=simple
+ExecStart=/home/zarbalatrax/startup.sh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

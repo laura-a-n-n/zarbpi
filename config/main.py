@@ -15,6 +15,7 @@ settings = dict(
     test_print_image = "006.png",
 
     command_prefix = ".",
+    internal_command_prefix = ";",
     audio_keyword = "A",
     play_keyword = "P",
     idle_keyword = "I",
