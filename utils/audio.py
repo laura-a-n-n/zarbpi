@@ -35,12 +35,15 @@ class Audio:
     
     def music(self, should_play: bool):
         music = str(settings["bg_music_start"] + self.current_song)
-        if music not in self.sounds:
-            self.create(music)
+        exists = music in self.sounds
         if should_play and not self.music_playing:
+            if not exists:
+                self.create(music)
             self.sounds[music].play(fade_ms=settings["fade_time"])
             wait(settings["fade_time"])
         elif not should_play:
+            if not exists:
+                return
             self.stop(music, fade_ms=settings["fade_time"])
             self.current_song += 1
             self.current_song %= settings["num_bg_music"]
