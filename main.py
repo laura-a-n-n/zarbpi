@@ -28,7 +28,9 @@ def main():
     if not answer:
         answer = arduino.readline().decode("utf-8").strip()
     print("Received:", answer)
-    is_prefixed = answer.startswith(settings["command_prefix"]) or answer.startswith(settings["internal_command_prefix"])
+
+    is_internal = answer.startswith(settings["internal_command_prefix"])
+    is_prefixed = answer.startswith(settings["command_prefix"]) or is_internal
     if not (answer and is_prefixed):
         print("(Not a command.)")
         return
@@ -77,6 +79,11 @@ def main():
         decision = decide("idle")
         arduino.write(str(decision).encode())
     elif split[0][0] == settings["print_keyword"]:
+        if is_internal and int(split[1]) == 0:
+            printer.image("/home/zarbalatrax/main/images/upload.png")
+            printer.cut()
+            return
+
         decoded = settings["decodings"][printer.get_code_from_id(split[1])]
         decoded = decoded.copy()
         decoded.append(decoded[-1])

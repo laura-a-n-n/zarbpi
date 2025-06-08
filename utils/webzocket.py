@@ -2,6 +2,7 @@ from websocket import WebSocketApp
 import subprocess
 import requests
 from time import sleep
+from PIL import Image
 
 zocket_queue = []
 
@@ -43,18 +44,25 @@ def on_message(wsapp, result):
             subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", f";X,{value}"])
     elif f"{result}" == "zocket:client:fetch":
         url = 'https://zarbalatrax.com:666/static/upload.png'
-        output_path = 'output.png'
+        output_path = 'images/upload.png'
         username = 'sarb'
         password = 'Squambo666'
 
         # Fetching the image with authentication
         response = requests.get(url, auth=(username, password))
 
+        print(response.headers)
         # Check if the request was successful
         if response.status_code == 200:
             with open(output_path, 'wb') as f:
                 f.write(response.content)
             print(f"Image saved to {output_path}")
+
+            image = Image.open(output_path)
+            image.thumbnail((512, 512))
+            image.save(output_path)
+            print(f"Image resized to {image.size}")
+            subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", f";X,0"])
         else:
             print(f"Failed to download image. Status code: {response.status_code}")
 
