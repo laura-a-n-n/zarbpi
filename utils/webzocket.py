@@ -4,11 +4,42 @@ import requests
 from time import sleep
 from PIL import Image
 
+import threading
+
+class ThreadSafeDict:
+    def __init__(self):
+        self._dict = {}
+        self._lock = threading.Lock()
+
+    def get(self, key, default=None):
+        with self._lock:
+            return self._dict.get(key, default)
+
+    def set(self, key, value):
+        with self._lock:
+            self._dict[key] = value
+
+    def get_and_set(self, key, new_value):
+        """Atomically reads and sets a value"""
+        with self._lock:
+            old_value = self._dict.get(key)
+            self._dict[key] = new_value
+            return old_value
+
+    def update(self, key, update_fn):
+        """Atomically updates a value using update_fn(old_value) -> new_value"""
+        with self._lock:
+            old_value = self._dict.get(key)
+            new_value = update_fn(old_value)
+            self._dict[key] = new_value
+            return new_value
+
 zocket_queue = []
 
 def on_open(wsapp):
     print("open")
-    wsapp.send("c2FyYmVsZXRyYWlzX2xlZ2VuZF9nb2RfNjY2ISEh")
+    with open(".zarbsecret", "r") as f:
+        wsapp.send(f.read())
     wsapp.send("zocket:zarbalatrax:hello")
 
 def on_close(wsapp, code, reason):
@@ -25,7 +56,27 @@ def on_error(wsapp: WebSocketApp, e):
     sleep(10)
     start_webzocket()
 
+
+state = ThreadSafeDict()
+state.set("upload_in_progress", False)
+
 def on_message(wsapp, result):
+    global state
+
+    if f"{result}".startswith("zocket:sarbeletrais:code:"):
+        print("sarb requested write to ZarbData.h")
+        if state.get_and_set("upload_in_progress", True):
+            print("upload is already in progress")
+            return
+        try:
+            with open("/home/zarbalatrax/zarbalatrax-3/zarbalatrax/ZarbData.h", "w") as f:
+                f.write(f"{result}".split("zocket:sarbeletrais:code:").pop())
+        except e:
+            print(e)
+        subprocess.call(["/home/zarbalatrax/upload-script.sh"], cwd="/home/zarbalatrax")
+        state.set("upload_in_progress", False)
+        return
+
     print(f"Received {result}")
     if f"{result}" == "zocket:client:request_presence":
         wsapp.send("zocket:zarbalatrax:hello")
@@ -38,15 +89,19 @@ def on_message(wsapp, result):
             subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", f";Q,{value}"])
             sleep(0.5)
             subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", ".G"])
+    elif f"{result}".startswith("zocket:client:queue:"):
+        value = int(f"{result}".split("zocket:client:queue:").pop())
+        if isinstance(value, int):
+            subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", f";Q,{value}"])
     elif f"{result}".startswith("zocket:client:print:"):
         value = int(f"{result}".split("zocket:client:print:").pop())
         if isinstance(value, int):
             subprocess.Popen(["python3", "/home/zarbalatrax/main/scripts/send-command.py", f";X,{value}"])
     elif f"{result}" == "zocket:client:fetch":
-        url = 'https://zarbalatrax.com:666/static/upload.png'
+        url = 'https://zarbalatrax.com/sarbeletrais/content/upload.png'
         output_path = 'images/upload.png'
-        username = 'sarb'
-        password = 'Squambo666'
+        username = 'squambo'
+        password = 'SquamboLegend666'
 
         # Fetching the image with authentication
         response = requests.get(url, auth=(username, password))
